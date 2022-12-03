@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { User } = require('../models');
+const { User } = require('../../models');
 
 // getting users
 router.get('/api/users', (req, res) => {
@@ -38,7 +38,7 @@ User.findOne({ _id: req.params.userId })
 
 // creating new users
 
-router.post('/api/users', (req, res) => {
+router.post('/', (req, res) => {
 User.create(req.body)
     .then((user) => res.json(user))
     .catch((err) => res.status(500).json(err));

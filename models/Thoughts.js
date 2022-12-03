@@ -1,5 +1,6 @@
 // Thoughts schema set up
-const { Schema, Types } = require('mongoose');
+const { Schema, Types, model } = require('mongoose');
+const reactionsSchema = require('./Reaction');
 
 const thoughtSchema = new Schema(
     {
@@ -13,17 +14,28 @@ const thoughtSchema = new Schema(
         createdAt: {
             type: Date,
             default: Date.now,
+            get: time => {
+                // *** take the time and convert it
+                // pass that into a date object
+                let theDate = new Date(time);
+                // call that obj.toDateString
+                let dateAsString = theDate.toDateString();
+                // return that string
+                return dateAsString;
+            }
         },
-        toJSON: {
-            getters: true,
-        },
-        id: false,
         username: {
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
         reactions: [reactionsSchema],
-    }
+    },
+    {
+        toJSON: {
+            getters: true,
+            id: false,
+        },
+    },
 );
 
 // virtual to get the length of the reactions array

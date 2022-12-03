@@ -1,7 +1,11 @@
-const { Schema, Types } = require('mongoose');
+const { Schema, Types, model } = require('mongoose');
 
 const userSchema = new Schema(
     {
+        userId : {
+            type: Schema.Types.ObjectId,
+            default: () => new Types.ObjectId(),
+        },
         username: {
             type: String,
             unique: true,
@@ -27,11 +31,13 @@ const userSchema = new Schema(
                 ref: 'User'
             }
         ],
+    },
+    {
         toJSON: {
-            virtuals: true,
-        },
+        virtuals: true,
         id: false,
-    } 
+    },
+} 
 );
 
 // virtual to get the length of the friends array
