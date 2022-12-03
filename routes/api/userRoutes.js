@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { User } = require('../../models');
+const { User, Thoughts } = require('../../models');
 
 // getting users
 router.get('/', (req, res) => {
@@ -15,11 +15,12 @@ router.get('/', (req, res) => {
 
 // getting a single user
 router.get('/:id', (req, res) => {
-User.findOne({ _id: req.params.userId })
+    console.log(req.params.id)
+User.findOne({ _id: req.params.id })
     .select('-__v')
     .then(async (user) =>
     !user
-        ? res.status(404).json({ message: `No user with ID ${req.params.userId}` })
+        ? res.status(404).json({ message: `No user with ID ${req.params.id}` })
         : res.json({ user })
     )
     .catch((err) => {
@@ -38,12 +39,17 @@ User.create(req.body)
 
 // updating existing user
 
-router.put('/api/users:id', (req, res) => {
+router.put('/:id', (req, res) => {
     User.findOneAndUpdate(
-        { user: req.params.studentId },
-        { $pull: { students: req.params.studentId } },
+        { _id: req.params.id },
+        { $set: req.body },
         { new: true }
-    ).catch((err) => {
+    ).then((user) => 
+    !user
+    ? res.status(404).json({ message: `No user with ID ${req.params.id}` })
+    : res.json(user)
+    )
+    .catch((err) => {
         console.log(err);
         return res.status(500)
     });
@@ -51,35 +57,22 @@ router.put('/api/users:id', (req, res) => {
 
 // deleting an existing user
 
-router.delete('/api/users:id', (req, res) => {
-    User.findOneAndRemove({ _id: req.params.userId })
-      .then((user) =>
-        !user
-          ? res.status(404).json({ message: 'No such user exists' })
-          : Thought.findOneAndUpdate(
-              { user: req.params.userId },
-              { $pull: { user: req.params.userId } },
-              { new: true }
-            )
-      )
-      .then((userThoughts) =>
-        !userThoughts
-          ? res.status(404).json({
-              message: 'User deleted, but no thoughts found',
-            })
-          : res.json({ message: 'User successfully deleted' })
-      )
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json(err);
-      });
+router.delete('/:id', (req, res) => {
+    User.findOneAndDelete({ _id: req.params.id })
+    .then((user) =>
+      !user
+        ? res.status(404).json({ message: 'No user with that ID' })
+        : Thoughts.deleteMany({ _id: { $in: user.userThoughts } })
+    )
+    .then(() => res.json({ message: 'User and thier Thoughts deleted!' }))
+    .catch((err) => res.status(500).json(err));
 });
 
 // adding new friends to a user
 
-router.post('/api/users:id/friends:id', (req, res) => {
+router.post('/:id/friends:id', (req, res) => {
     User.findOneAndUpdate(
-        { _id: req.params.userId },
+        { _id: req.params.id },
         { $addToSet: { userFriends: req.body } },
         { runValidators: true, new: true }
       )
