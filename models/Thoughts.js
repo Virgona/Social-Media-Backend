@@ -41,7 +41,7 @@ const thoughtSchema = new Schema(
 // virtual to get the length of the reactions array
 thoughtSchema.virtual('reactionCount')
 .get(function () {
-    return thoughtSchema.reactions.length
+    return this.reactions.length
 });
 
 const Thoughts = model('thoughts', thoughtSchema);

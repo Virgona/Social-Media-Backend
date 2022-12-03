@@ -2,14 +2,10 @@ const router = require('express').Router();
 const { User } = require('../../models');
 
 // getting users
-router.get('/api/users', (req, res) => {
+router.get('/', (req, res) => {
     User.find()
     .then(async (users) => {
-      const userObj = {
-        users,
-        friendCount: await friendCount(),
-      };
-      return res.json(userObj);
+      return res.json(users);
     })
     .catch((err) => {
       console.log(err);
@@ -17,18 +13,14 @@ router.get('/api/users', (req, res) => {
     });
 });
 
-router.get('/api/users:id', (req, res) => {
+// getting a single user
+router.get('/:id', (req, res) => {
 User.findOne({ _id: req.params.userId })
     .select('-__v')
     .then(async (user) =>
     !user
-        ? res.status(404).json({ message: 'No user with that ID' })
-        : res.json({
-            user,
-            userFriends: await friendCount(),
-            userThoughts: await thoughtCount(),
-
-        })
+        ? res.status(404).json({ message: `No user with ID ${req.params.userId}` })
+        : res.json({ user })
     )
     .catch((err) => {
     console.log(err);

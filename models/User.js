@@ -2,10 +2,6 @@ const { Schema, Types, model } = require('mongoose');
 
 const userSchema = new Schema(
     {
-        userId : {
-            type: Schema.Types.ObjectId,
-            default: () => new Types.ObjectId(),
-        },
         username: {
             type: String,
             unique: true,
@@ -44,7 +40,7 @@ const userSchema = new Schema(
 
 userSchema.virtual('friendCount')
 .get(function () {
-    return userSchema.userFriends.length
+    return this.userFriends.length
 });
 
 // initializing and exporting model
