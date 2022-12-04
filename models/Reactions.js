@@ -19,6 +19,13 @@ const reactionsSchema = new Schema(
         createdAt: {
             type: Date,
             default: Date.now,
+            get: time => {
+                let theDate = new Date(time);
+            
+                let dateAsString = theDate.toDateString();
+                
+                return dateAsString;
+            }
         },
     },
     {
@@ -27,6 +34,7 @@ const reactionsSchema = new Schema(
             id: false,
         },
     }
-    );
+);
+
 
 module.exports = reactionsSchema;

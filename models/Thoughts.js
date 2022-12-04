@@ -1,6 +1,6 @@
 // Thoughts schema set up
 const { Schema, Types, model } = require('mongoose');
-const reactionsSchema = require('./Reaction');
+const reactionsSchema = require('./Reactions');
 
 const thoughtSchema = new Schema(
     {

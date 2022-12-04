@@ -30,7 +30,6 @@ User.findOne({ _id: req.params.id })
 });
 
 // creating new users
-
 router.post('/', (req, res) => {
 User.create(req.body)
     .then((user) => res.json(user))
@@ -38,7 +37,6 @@ User.create(req.body)
 });
 
 // updating existing user
-
 router.put('/:id', (req, res) => {
     User.findOneAndUpdate(
         { _id: req.params.id },
@@ -56,7 +54,6 @@ router.put('/:id', (req, res) => {
 });
 
 // deleting an existing user
-
 router.delete('/:id', (req, res) => {
     User.findOneAndDelete({ _id: req.params.id })
     .then((user) =>
@@ -69,11 +66,10 @@ router.delete('/:id', (req, res) => {
 });
 
 // adding new friends to a user
-
-router.put('/:userId/friends/:friendId', (req, res) => {
+router.put('/:id/friends/:friendId', (req, res) => {
     User.findOneAndUpdate(
         { _id: req.params.id },
-        { $addToSet: { userFriends: req.body.friendId } },
+        { $addToSet: { userFriends: req.params.friendId } },
         { runValidators: true, new: true }
       )
         .then((user) =>
@@ -87,11 +83,10 @@ router.put('/:userId/friends/:friendId', (req, res) => {
 });
 
 // deleting a users friend
-
-router.delete('/api/users:id/friends:id', (req, res) => {
+router.delete('/:id/friends/:friendId', (req, res) => {
     User.findOneAndUpdate(
-        { _id: req.params.userId },
-        { $pull: { userFriends: { friendId: req.params.friendId } } },
+        { _id: req.params.id },
+        { $pull: { userFriends: { id: req.params.friendId } } },
         { runValidators: true, new: true }
       )
         .then((user) =>
