@@ -70,10 +70,10 @@ router.delete('/:id', (req, res) => {
 
 // adding new friends to a user
 
-router.post('/:id/friends:id', (req, res) => {
+router.put('/:id/friends/:id', (req, res) => {
     User.findOneAndUpdate(
         { _id: req.params.id },
-        { $addToSet: { userFriends: req.body } },
+        { $addToSet: { userFriends: req.body.id } },
         { runValidators: true, new: true }
       )
         .then((user) =>
