@@ -15,12 +15,10 @@ const thoughtSchema = new Schema(
             type: Date,
             default: Date.now,
             get: time => {
-                // *** take the time and convert it
-                // pass that into a date object
                 let theDate = new Date(time);
-                // call that obj.toDateString
+            
                 let dateAsString = theDate.toDateString();
-                // return that string
+            
                 return dateAsString;
             }
         },
